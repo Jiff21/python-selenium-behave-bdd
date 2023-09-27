@@ -19,6 +19,7 @@ from custom_exceptions import loop_thru_messages
 from hover_state import *
 from functional.features.steps.seo import SeoChecker
 
+MENU_BUTTON = (By.CSS_SELECTOR, '#menu_button_container button')
 
 @step('I am on "{page_name}"')
 def get(context, page_name):
@@ -36,6 +37,7 @@ def get(context, page_name):
     context.response = context.session.get(context.current_url)
     assert context.response.status_code is requests.codes.ok, \
     ' Unexpectedly got a %d response code' % context.response.status_code
+
 
 @step('I check the console logs')
 def step_impl(context):
@@ -68,5 +70,23 @@ def step_impl(context, down, up, latency):
         upload_throughput=up * (conversion * 2)
         # download_throughput=down * 8000,  # maximal throughput
         # upload_throughput=up * 8000
+    )
+
+
+@step('I type in "{text}"')
+def step_impl(context, text):
+    context.current_element.send_keys(text)
+
+
+@step('I wait for the Menu button')
+def step_impl(context):
+    wait = WebDriverWait(context.driver, 10)
+    wait.until(EC.presence_of_element_located(MENU_BUTTON))
+
+@then('the url should contain "{uri}"')
+def step_impl(context, uri):
+    assert uri in context.driver.current_url, "Expected {expected}, got {found}".format(
+        expected=uri,
+        found=context.driver.current_url
     )
 

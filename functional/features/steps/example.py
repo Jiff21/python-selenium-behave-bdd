@@ -12,14 +12,6 @@ BIKE_LIGHT_BUTTON = (By.XPATH, '//*[contains(text(), "Sauce Labs Bike Light")]/a
 CART_BADGE = (By.CSS_SELECTOR, '.shopping_cart_badge')
 SORT_SELECTOR = (By.CSS_SELECTOR, 'select.product_sort_container')
 
-
-@step('I type in "{thing}"')
-def step_impl(context, thing):
-    el = context.driver.find_element(*SEARCH_FIELD_SELECTOR)
-    el.send_keys(thing)
-    el.send_keys(Keys.ENTER)
-
-
 @step('the results should contain "{word}"')
 def step_impl(context, word):
     wait = WebDriverWait(context.driver, 10)
@@ -29,10 +21,12 @@ def step_impl(context, word):
         el.text
     )
 
+
 @step('I Click the Bike Light Add to Cart Button')
 def step_impl(context):
     context.current_element = context.driver.find_element(*BIKE_LIGHT_BUTTON)
     context.current_element.click()
+
 
 @then('the button should contain the Text "{text}"')
 def step_impl(context, text):
@@ -60,6 +54,7 @@ def step_impl(context):
 def step_impl(context, text):
     selector = Select(context.driver.find_element(*SORT_SELECTOR))
     selector.select_by_visible_text(text)
+
 
 @step('item "{num}" shold be "{text}"')
 def step_impl(context, num, text):

@@ -30,7 +30,7 @@ else:
 
 
 # Host of server
-HOST = os.getenv('HOST', 'www.saucedemo.com/v1/')
+HOST = os.getenv('HOST', 'www.saucedemo.com/v1')
 if QA_ENV == 'local':
     HOST_URL = os.getenv('HOST_URL', 'http://%s' % HOST)
 else:
