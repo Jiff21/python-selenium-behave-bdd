@@ -1,8 +1,10 @@
+"""Sets up requests session, adding bearer_header if set."""
+
 import requests
 from settings import log, default_headers
 
 
-class SetupRequests(object):
+class SetupRequests():
     '''Setup for requests session used in the various auth files'''
 
     def __init__(self):

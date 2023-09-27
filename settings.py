@@ -91,6 +91,7 @@ JIRA_PROJECT_ABBR = 'KEY-'
 
 DRIVER = os.getenv('DRIVER', 'chrome')
 DRIVER = DRIVER.lower().replace(' ', '_').replace('-', '_')
+SELENIUM = os.getenv('SELENIUM', 'http://localhost:4444/wd/hub')
 
 SL_DC = os.getenv(
     'SL_DC',
