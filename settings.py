@@ -30,7 +30,7 @@ else:
 
 
 # Host of server
-HOST = os.getenv('HOST', 'localhost:3000')
+HOST = os.getenv('HOST', 'www.saucedemo.com/v1/')
 if QA_ENV == 'local':
     HOST_URL = os.getenv('HOST_URL', 'http://%s' % HOST)
 else:
@@ -98,10 +98,10 @@ SL_DC = os.getenv(
 )
 
 PAGES_DICT = {
-    'cart': '/v1/cart.html',
-    'checkout':'/v1/checkout-step-one.html',
-    'index': '',
-    'inventory':'/v1/inventory.html'
+    'cart': '/cart.html',
+    'checkout':'/checkout-step-one.html',
+    'index': '/',
+    'inventory':'/inventory.html'
 }
 
 DEBIAN_CHROME = '/usr/bin/google-chrome'
