@@ -45,7 +45,7 @@ def step_impl(context, text):
 @step('the cart badge displays "{num}"')
 def step_impl(context, num):
     context.current_element = context.driver.find_element(*CART_BADGE)
-    assert context.current_element.text == text, "Expected {expected}, got {found}".format(
+    assert context.current_element.text == num, "Expected {expected}, got {found}".format(
         expected=num,
         found=context.current_element.text
     )
@@ -53,7 +53,6 @@ def step_impl(context, num):
 @then('the cart badge should not be present')
 def step_impl(context):
     cart_badges = context.driver.find_elements(*CART_BADGE)
-    import time; time.sleep(2)
     assert len(cart_badges) == 0, "Cart badge was present"
 
 
@@ -61,7 +60,6 @@ def step_impl(context):
 def step_impl(context, text):
     selector = Select(context.driver.find_element(*SORT_SELECTOR))
     selector.select_by_visible_text(text)
-    import time; time.sleep(2)
 
 @step('item "{num}" shold be "{text}"')
 def step_impl(context, num, text):

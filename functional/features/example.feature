@@ -29,3 +29,22 @@ Feature: Example tests on the Sauce Labs Inventory Page
     Given I am on "inventory"
     When I select "Price (high to low)" from the sort selector
     Then item "1" shold be "Sauce Labs Fleece Jacket"
+
+  @browser @minor
+    Scenario: The Low to High Selector orders the Lowest priced item first
+      Given I am on "inventory"
+      When I select "Price (low to high)" from the sort selector
+      Then item "1" shold be "Sauce Labs Onesie"
+
+  @browser @minor
+    Scenario: The Name A to Z Selector orders correctly
+      Given I am on "inventory"
+        And I select "Price (low to high)" from the sort selector
+      When I select "Name (A to Z)" from the sort selector
+      Then item "1" shold be "Sauce Labs Backpack"
+
+  @browser @minor
+    Scenario: The Name Z to A Selector orders correctly
+      Given I am on "inventory"
+      When I select "Name (Z to A)" from the sort selector
+      Then item "1" shold be "Test.allTheThings() T-Shirt (Red)"
