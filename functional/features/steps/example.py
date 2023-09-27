@@ -1,18 +1,16 @@
-import requests
 import time
 from behave import given, when, then
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.ui import Select
 from settings import HOST_URL, PAGES_DICT
 
 # Locator Map
 BIKE_LIGHT_BUTTON = (By.XPATH, '//*[contains(text(), "Sauce Labs Bike Light")]/ancestor::div[contains(@class, "inventory_item")]/div[contains(@class, "pricebar")]//button')
 CART_BADGE = (By.CSS_SELECTOR, '.shopping_cart_badge')
-SUBMIT_BUTTON = (By.XPATH, '//center/input[@name="btnK"]')
-RESULTS_WAIT = (By.ID, 'cnt')
-RESULTS_ASSERTION = (By.XPATH, '//*[@id="rso"]//a')
+SORT_SELECTOR = (By.CSS_SELECTOR, 'select.product_sort_container')
 
 
 @step('I type in "{thing}"')
@@ -43,12 +41,13 @@ def step_impl(context, text):
         expected=text,
         found=context.current_element.text
     )
+
 @step('the cart badge displays "{num}"')
 def step_impl(context, num):
     context.current_element = context.driver.find_element(*CART_BADGE)
-    assert context.current_element.text == num, "Expected {num}, got {text}".format(
-        num=num,
-        text=context.current_element.text
+    assert context.current_element.text == text, "Expected {expected}, got {found}".format(
+        expected=num,
+        found=context.current_element.text
     )
 
 @then('the cart badge should not be present')
@@ -56,10 +55,20 @@ def step_impl(context):
     cart_badges = context.driver.find_elements(*CART_BADGE)
     import time; time.sleep(2)
     assert len(cart_badges) == 0, "Cart badge was present"
-    
 
 
+@step('I select "{text}" from the sort selector')
+def step_impl(context, text):
+    selector = Select(context.driver.find_element(*SORT_SELECTOR))
+    selector.select_by_visible_text(text)
+    import time; time.sleep(2)
 
-    
-
-
+@step('item "{num}" shold be "{text}"')
+def step_impl(context, num, text):
+    xpath_selector = '//div[contains(@class, "inventory_item")][' + num + ']'
+    context.current_item = context.driver.find_element(By.XPATH, xpath_selector)
+    context.current_item_title = context.current_item.find_element(By.CSS_SELECTOR, ".inventory_item_name")
+    assert context.current_item_title.text == text, "Expected {expected}, got {found}".format(
+        expected=text,
+        found=context.current_item_title.text
+    )

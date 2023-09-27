@@ -8,7 +8,7 @@ Feature: Example tests on the Sauce Labs Inventory Page
       And the cart badge displays "1"
 
   @browser @medium
-  Scenario: Remove from cart button works
+  Scenario: In page Remove from cart button works
     Given I am on "inventory"
       And I Click the Bike Light Add to Cart Button
       And the cart badge displays "1"
@@ -25,7 +25,7 @@ Feature: Example tests on the Sauce Labs Inventory Page
     Then there should be no severe console log errors
 
   @browser @minor
-  Scenario: The first result for Python behave should contain expected title
-    Given I am on "index"
-    When I type in "Behave Python"
-    Then the results should contain "Welcome to behave!"
+  Scenario: The High to Low Selector orders the highest priced item first
+    Given I am on "inventory"
+    When I select "Price (high to low)" from the sort selector
+    Then item "1" shold be "Sauce Labs Fleece Jacket"

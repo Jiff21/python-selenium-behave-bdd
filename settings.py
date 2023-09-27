@@ -98,10 +98,10 @@ SL_DC = os.getenv(
 )
 
 PAGES_DICT = {
+    'cart': '/v1/cart.html',
+    'checkout':'/v1/checkout-step-one.html',
     'index': '',
-    'inventory':'/v1/inventory.html',
-    'products page':'/about/products',
-    'contact':'/contact'
+    'inventory':'/v1/inventory.html'
 }
 
 DEBIAN_CHROME = '/usr/bin/google-chrome'
