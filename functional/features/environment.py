@@ -8,7 +8,7 @@ from functional.features.requester import SetupRequests
 from settings import DEFAULT_WIDTH, DEFAULT_HEIGHT
 from settings import DISPLAY, XVFB_RESOLUTION
 from settings import EDITOR_EMAIL, EDITOR_PASSWORD, EDITOR_NAME
-from settings import HOST_URL, DRIVER, SELENIUM, QA_ENV, log
+from settings import HOST_URL, DRIVER, QA_ENV, log
 from settings import MOBILE_WIDTH, MOBILE_HEIGHT
 from settings import TABLET_WIDTH, TABLET_HEIGHT
 from selenium.webdriver.support.ui import WebDriverWait

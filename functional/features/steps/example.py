@@ -8,8 +8,8 @@ from selenium.webdriver.common.keys import Keys
 from settings import HOST_URL, PAGES_DICT
 
 # Locator Map
-ABOUT_NAV_ITEM = (By.CSS_SELECTOR, 'nav.top-nav a[title*="About"]')
-SEARCH_FIELD_SELECTOR = (By.XPATH, '//input[@aria-label="Search"]')
+BIKE_LIGHT_BUTTON = (By.XPATH, '//*[contains(text(), "Sauce Labs Bike Light")]/ancestor::div[contains(@class, "inventory_item")]/div[contains(@class, "pricebar")]//button')
+CART_BADGE = (By.CSS_SELECTOR, '.shopping_cart_badge')
 SUBMIT_BUTTON = (By.XPATH, '//center/input[@name="btnK"]')
 RESULTS_WAIT = (By.ID, 'cnt')
 RESULTS_ASSERTION = (By.XPATH, '//*[@id="rso"]//a')
@@ -31,7 +31,35 @@ def step_impl(context, word):
         el.text
     )
 
-
-@step('I look at the about nav')
+@step('I Click the Bike Light Add to Cart Button')
 def step_impl(context):
-    context.current_element = context.driver.find_element(*ABOUT_NAV_ITEM)
+    context.current_element = context.driver.find_element(*BIKE_LIGHT_BUTTON)
+    context.current_element.click()
+
+@then('the button should contain the Text "{text}"')
+def step_impl(context, text):
+    context.current_element = context.driver.find_element(*BIKE_LIGHT_BUTTON)
+    assert context.current_element.text == text, "Expected {expected}, got {found}".format(
+        expected=text,
+        found=context.current_element.text
+    )
+@step('the cart badge displays "{num}"')
+def step_impl(context, num):
+    context.current_element = context.driver.find_element(*CART_BADGE)
+    assert context.current_element.text == num, "Expected {num}, got {text}".format(
+        num=num,
+        text=context.current_element.text
+    )
+
+@then('the cart badge should not be present')
+def step_impl(context):
+    cart_badges = context.driver.find_elements(*CART_BADGE)
+    import time; time.sleep(2)
+    assert len(cart_badges) == 0, "Cart badge was present"
+    
+
+
+
+    
+
+

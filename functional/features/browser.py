@@ -2,8 +2,7 @@ import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from settings import DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_BROWSER_POSITION
-from settings import HOST_URL, DRIVER, SELENIUM, SL_DC, QA_FOLDER_PATH
-from settings import APPIUM_HUB
+from settings import HOST_URL, DRIVER, SL_DC
 
 def dict_from_string(current_dict, string):
     for item in string.split(','):

@@ -91,10 +91,6 @@ JIRA_PROJECT_ABBR = 'KEY-'
 
 DRIVER = os.getenv('DRIVER', 'chrome')
 DRIVER = DRIVER.lower().replace(' ', '_').replace('-', '_')
-SELENIUM = os.getenv('SELENIUM', 'http://localhost:4444/wd/hub')
-APPIUM_HUB = os.getenv('APPIUM_HUB', 'http://localhost:4723/wd/hub')
-QA_DIRECTORY = os.path.abspath(os.path.dirname(__file__))
-QA_FOLDER_PATH = os.getenv('QA_FOLDER_PATH', 'qa')
 
 SL_DC = os.getenv(
     'SL_DC',
@@ -103,7 +99,7 @@ SL_DC = os.getenv(
 
 PAGES_DICT = {
     'index': '',
-    'about':'/v1/inventory.html',
+    'inventory':'/v1/inventory.html',
     'products page':'/about/products',
     'contact':'/contact'
 }
