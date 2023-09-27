@@ -1,0 +1,281 @@
+cache:
+  paths:
+  - bower_components/
+  - jspm_packages/
+  - node_modules/
+
+stages:
+  - lint
+  - build
+  - test
+  - deploy
+  - test_integration
+  - test_reporting
+
+lint_backend:
+  image: python:2.7
+  stage: lint
+  script:
+   - export PYTHONPATH=$PWD/backend/lib:$PYTHONPATH
+   - pip install pylint Flask flask-talisman
+   - find backend -path backend/lib -prune -o -iname "*.py" |xargs pylint -r y
+
+lint_frontend:
+  image: node
+  stage: lint
+  script:
+   - cd frontend
+   - npm install standard
+   - npm run lint
+
+build_backend:
+  image: python
+  stage: build
+  script:
+   - pip install -t backend/lib -r backend/requirements.txt
+   - export PYTHONPATH=$PWD/backend/lib:$PYTHONPATH
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - backend/
+      - backend/libs
+
+build_frontend:
+  image: node
+  stage: build
+  script:
+   - cd frontend
+   - npm install
+   - npm run build
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - backend/static
+      - backend/templates
+
+test_backend:
+  image: python
+  stage: test
+  script:
+    - export PYTHONPATH=$PWD/backend/lib:$PYTHONPATH
+    - python -m unittest discover -s backend
+
+test_frontend:
+  image: node
+  stage: test
+  script:
+   - cd frontend
+   - npm install
+   - npm test
+
+deploy:
+  image: google/cloud-sdk
+  stage: deploy
+  environment:
+    name: $CI_BUILD_REF_NAME
+    url: https://$CI_BUILD_REF_SLUG-dot-$GAE_PROJECT.appspot.com
+  script:
+    - echo "$GAE_KEY" > /tmp/gae_key.json
+    - gcloud config set project $GAE_PROJECT
+    - gcloud auth activate-service-account --key-file /tmp/gae_key.json
+    - gcloud --quiet app deploy --version $CI_BUILD_REF_SLUG --no-promote
+  after_script:
+    - rm /tmp/gae_key.json
+
+chrome_functionality_tests:
+  image: jiffcampbell/qa_baglz:0.5
+  stage: test_integration
+  allow_failure: true
+  variables:
+    # Test options
+    DRIVER: headless_chrome
+    HOST_URL: https://www.google.com
+    SELENIUM: http://selenium__standalone-chrome:4444/wd/hub
+    # Service options
+    SHM_SIZE: '2g'
+    SCREEN_WIDTH: '2560'
+    SCREEN_HEIGHT: '1440'
+  artifacts:
+    when: always
+    paths:
+      - utilities/allure/allure_results/
+    expire_in: 1 hour
+  services:
+    - name: selenium/standalone-chrome:3.11
+  script:
+    - behave -f allure_behave.formatter:AllureFormatter
+      -o utilities/allure/allure_results/
+      functional/features -e gmail
+
+firefox_functionality_tests:
+  image: jiffcampbell/qa_baglz:0.5
+  stage: test_integration
+  allow_failure: true
+  variables:
+    # Test options
+    DRIVER: remote_firefox
+    HOST_URL: https://www.google.com
+    SELENIUM: http://selenium__standalone-firefox:4444/wd/hub
+    # Service options
+    SHM_SIZE: '2g'
+    SCREEN_WIDTH: '2560'
+    SCREEN_HEIGHT: '1440'
+  artifacts:
+    when: always
+    paths:
+      - utilities/allure/allure_results/
+    expire_in: 1 hour
+  services:
+    - name: selenium/standalone-firefox:3.11
+  script:
+    - behave -f allure_behave.formatter:AllureFormatter
+      -o utilities/allure/allure_results/
+      functional/features -e gmail
+
+verify_performance:
+  image: jiffcampbell/qa_baglz:0.5
+  stage: test_integration
+  allow_failure: true
+  artifacts:
+    when: always
+    paths:
+      - utilities/allure/allure_results/
+    expire_in: 1 hour
+  allow_failure: true
+  variables:
+    HOST_URL: https://www.google.com
+  script:
+    - 'if [ -z "$NIGHTLY_TEST" ];
+      then echo "Skipping performance test until nightly test run." && exit 0; fi'
+    - export PYTHONPATH=$PWD/lib:$PYTHONPATH
+    - set +e # allow failures in locust default assertions
+    - python3 performance/only_locust_runner.py
+    - set -e # toggle allow failues off for behave tests
+    - behave -f allure_behave.formatter:AllureFormatter
+      -o utilities/allure/allure_results/
+      performance/features
+
+verify_analytics:
+  image: jiffcampbell/qa_baglz:0.5
+  stage: test_integration
+  allow_failure: true
+  services:
+    - name: selenium/standalone-chrome:3.11
+  variables:
+    HOST_URL: https://www.google.com
+    SELENIUM: http://selenium__standalone-chrome:4444/wd/hub
+    DRIVER: remote_ga_chrome
+  artifacts:
+    when: always
+    paths:
+      - utilities/allure/allure_results/
+    expire_in: 1 hour
+  script:
+    - export PYTHONPATH=$PWD/lib:$PYTHONPATH
+    # - pip install -r utilities/allure/requirements.txt
+    # - pip install -r analytics/requirements.txt
+    - behave -f allure_behave.formatter:AllureFormatter
+      -o utilities/allure/allure_results/
+      analytics/features
+
+
+verify_security:
+  image: jiffcampbell/qa_baglz:0.5
+  stage: test_integration
+  allow_failure: true
+  artifacts:
+    when: always
+    paths:
+      - utilities/allure/allure_results/
+    expire_in: 1 hour
+  services:
+  - name: selenium/standalone-chrome:3.4
+  - name: owasp/zap2docker-stable
+    command: ["zap.sh", "-daemon", "-port", "8080", "-host", "0.0.0.0", "-config", "api.key=0123456789", "-config", "api.addrs.addr.name=.*", "-config", "api.addrs.addr.regex=true", "-config", "scanner.strength=INSANE", "-Xmx1024m"]
+  variables:
+    ZAP_ADDRESS: http://owasp__zap2docker-stable:8080
+    ZAP_API_KEY: 0123456789
+    DRIVER: headless_chrome
+    HOST_URL: https://www.example.com
+    TIMEOUT: 20000
+    SELENIUM: http://selenium__standalone-chrome:4444/wd/hub
+  script:
+    - export PYTHONPATH=$PWD/lib:$PYTHONPATH
+    - 'if [ -z "$NIGHTLY_TEST" ];
+      then echo "Skipping Security test until nightly run." && exit 0; fi'
+    - set +e # allow failures in scan
+    - ./utilities/wait_for/wait-for -t 500 $ZAP_ADDRESS -- python3 security/zap_scanner.py
+    - set -e # toggle allow failues off for behave tests
+    - behave -f allure_behave.formatter:AllureFormatter
+      -o utilities/allure/allure_results/
+      security/features
+
+visual_chrome_tests:
+  image: jiffcampbell/qa_baglz:0.5
+  stage: test_integration
+  allow_failure: true
+  variables:
+    # Test options
+    DRIVER: headless_chrome
+    HOST_URL: https://www.google.com
+    # Selenium address set in visual/gitlab_configs/
+    # Service options
+    SHM_SIZE: '2g'
+    SCREEN_WIDTH: '2560'
+    SCREEN_HEIGHT: '1440'
+  artifacts:
+    when: always
+    paths:
+      - utilities/allure/allure_results/
+    expire_in: 1 hour
+  services:
+    - name: selenium/standalone-chrome:3.11
+  script:
+    - bash -c 'galen test visual/tests/responsive.test
+      --filter "Homepage on * device in chrome browser"
+      --config visual/gitlab_configs/current_remote_chrome.config
+      --jsonreport visual/results/;
+      behave -f allure_behave.formatter:AllureFormatter
+      -o utilities/allure/allure_results/ visual/features/
+      --tags chrome-only --no-skipped'
+
+visual_firefox_tests:
+  image: jiffcampbell/qa_baglz:0.5
+  stage: test_integration
+  allow_failure: true
+  variables:
+    # Test options
+    DRIVER: remote_firefox
+    HOST_URL: https://www.google.com
+    # Selenium address set in visual/gitlab_configs/
+    # Service options
+    SHM_SIZE: '2g'
+    SCREEN_WIDTH: '2560'
+    SCREEN_HEIGHT: '1440'
+  artifacts:
+    when: always
+    paths:
+      - utilities/allure/allure_results/
+    expire_in: 1 hour
+  services:
+    - name: selenium/standalone-firefox:3.11
+  script:
+    - bash -c 'galen test visual/tests/responsive.test
+      --filter "Homepage on * device in firefox browser"
+      --config visual/gitlab_configs/current_remote_firefox.config
+      --jsonreport visual/results/;
+      behave -f allure_behave.formatter:AllureFormatter
+      -o utilities/allure/allure_results/ visual/features/
+      --tags firefox-only --no-skipped'
+
+all_test_reports:
+  stage: test_reporting
+  artifacts:
+    paths:
+      - utilities/allure/allure_results/
+    expire_in: 1 hour
+  script:
+    - echo 'Report Built'
+
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
