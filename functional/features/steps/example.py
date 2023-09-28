@@ -7,7 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.ui import Select
-from functional.features.steps.name_form import first_name, last_name, zip_code
+from name_form import first_name, last_name, zip_code
 
 # Locator Map
 BIKE_LIGHT_BUTTON = (

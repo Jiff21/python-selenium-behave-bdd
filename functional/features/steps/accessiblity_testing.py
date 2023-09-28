@@ -1,4 +1,6 @@
-# pylint: disable=missing-function-docstring
+''' A collection of steps used for accessiblity testing '''
+# pylint: disable=missing-function-docstring,attribute-defined-outside-init,consider-using-f-string,too-many-public-methods,function-redefined,unused-import
+
 import time
 from behave import given, when, then, step
 from selenium.webdriver.common.by import By
@@ -16,15 +18,9 @@ def send_key_x_times(context, key, number_of_times):
     i = 0
     while i < number_of_times:
         action = ActionChains(context.driver)
-        action.send_keys(key).perform();
+        action.send_keys(key).perform()
         i += 1
         time.sleep(0.25)
-
-
-# Debugging Pyrposes
-@step('I sleep "{number:d}" seconds')
-def step_impl(context, number):
-    time.sleep(number)
 
 
 @step('I hit the tab key "{number:d}" time(s)')
@@ -38,7 +34,7 @@ def step_impl(context, number):
     i = 0
     while i < number:
         action = ActionChains(context.driver)
-        action.send_keys(Keys.SHIFT, Keys.TAB, Keys.SHIFT).perform();
+        action.send_keys(Keys.SHIFT, Keys.TAB, Keys.SHIFT).perform()
         i += 1
         time.sleep(0.25)
     context.current_element = context.driver.switch_to.active_element
@@ -67,7 +63,6 @@ def step_impl(context, number):
 def step_impl(context, number):
     send_key_x_times(context, Keys.ARROW_UP, number)
     context.current_element = context.driver.switch_to.active_element
-    time.sleep(3)
 
 
 @step('I hit the Space key')
@@ -77,8 +72,7 @@ def step_impl(context):
 
 @step('I hit the Return key')
 def step_impl(context):
-    ActionChains(context.driver).send_keys(Keys.RETURN).perform();
-    # context.current_element.send_keys(Keys.RETURN)
+    ActionChains(context.driver).send_keys(Keys.RETURN).perform()
 
 
 @step('I type "{words}" into the focused element')

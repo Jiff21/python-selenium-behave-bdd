@@ -1,4 +1,6 @@
-import time
+''' A collection of assertions around css values used for testing if hover is working '''
+# pylint: disable=missing-function-docstring,attribute-defined-outside-init,consider-using-f-string,too-many-public-methods,function-redefined,unused-import
+
 from behave import given, when, then, step
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -34,7 +36,6 @@ def step_impl(context, value):
     )
 
 
-
 @step('it should have the alt text "{value}"')
 def step_impl(context, value):
     alt_text = context.current_element.get_attribute('alt')
@@ -49,7 +50,7 @@ def step_impl(context, value):
     image_src = context.current_element.get_attribute('src')
     assert value in image_src, "Did not get %s in image src. Instead %s" % (
         value,
-        alt_text
+        image_src
     )
 
 
@@ -75,6 +76,6 @@ def step_impl(context, pixels):
 def step_impl(context, color):
     underline = context.current_element.value_of_css_property('border-bottom-color')
     assert color in underline, "Did not get %s underline color. Instead %s" % (
-        pixels,
-        outline_border
+        color,
+        underline
     )

@@ -1,3 +1,5 @@
+''' helper functiona for dealing with tabs and scrolling help for Firefox '''
+# pylint: disable=missing-function-docstring,attribute-defined-outside-init,consider-using-f-string,too-many-public-methods,function-redefined,unused-import
 import time
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import ElementNotVisibleException
@@ -16,7 +18,9 @@ def scroll_to_webelement(driver, web_element):
     '''
     if 'firefox' in driver.capabilities['browserName'] \
         or 'safari' in driver.capabilities['browserName']:
+        # pylint: disable=C0103
         x = web_element.location['x']
+        # pylint: disable=C0103
         y = web_element.location['y']
         scroll_by_coord = 'window.scrollTo(%s,%s);' % (
             x,
@@ -31,7 +35,7 @@ def safari_window_switcher(context, title):
     '''Safari has timing issues with which window is what.'''
     if 'safari' in context.driver.capabilities['browserName']:
         context.expected_title = title
-        for i in range(0, len(context.driver.window_handles)):
+        for i in enumerate(context.driver.window_handles):
             context.driver.switch_to_window(context.driver.window_handles[i])
             if context.driver.title == context.expected_title:
                 context.handle_to_switch_to = context.driver.current_window_handle
@@ -59,18 +63,17 @@ def make_sure_safari_back_on_only_window(driver):
 def safari_text_shim(selector_type, text_to_find, driver):
     '''Safari isn't good with XPATH text selector'''
     all_els = driver.find_elements(By.CSS_SELECTOR, selector_type)
-    for el in all_els:
-        if text_to_find in el.text:
-            print('Found text: %s' % el.text)
+    for element in all_els:
+        if text_to_find in element.text:
+            print('Found text: %s' % element.text)
             actions = ActionChains(driver)
-            actions.move_to_element(el)
+            actions.move_to_element(element)
             actions.click()
             actions.perform()
             return
 
-
-# From somebody else but works well
 class LocalStorage:
+    '''helper class for working with locale storage'''
 
     def __init__(self, driver) :
         self.driver = driver
