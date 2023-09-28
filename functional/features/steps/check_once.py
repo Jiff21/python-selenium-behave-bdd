@@ -1,5 +1,8 @@
+''' Step definition for check_once.feature'''
+# pylint: disable=missing-function-docstring,attribute-defined-outside-init,consider-using-f-string,too-many-public-methods,function-redefined
 import re
 import requests
+from behave import step
 from settings import HOST_URL
 
 
@@ -11,6 +14,7 @@ def step_impl(context):
         allow_redirects=False
     )
     context.sitemap_text = context.response.text
+    # pylint: disable=E1101
     assert context.response.status_code is requests.codes.ok, \
     ' Unexpectedly got a %d response code at %s' % (
         context.response.status_code,
