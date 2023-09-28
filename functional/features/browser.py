@@ -1,7 +1,8 @@
-# pylint: disable=missing-function-docstring,attribute-defined-outside-init,consider-using-f-string
+# pylint: disable=missing-function-docstring,attribute-defined-outside-init,consider-using-f-string,too-many-public-methods
 '''Configuratins saved to easily setup different browsers'''
 
 from selenium import webdriver
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from settings import DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_BROWSER_POSITION
 from settings import DRIVER, SELENIUM, SL_DC
 

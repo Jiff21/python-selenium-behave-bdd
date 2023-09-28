@@ -1,3 +1,4 @@
+# pylint: disable=missing-function-docstring
 import time
 from behave import given, when, then, step
 from selenium.webdriver.common.by import By
@@ -11,6 +12,7 @@ from settings import USER_EMAIL, USER_PASSWORD
 
 
 def send_key_x_times(context, key, number_of_times):
+    '''Helper function to tap a keyboard input x times'''
     i = 0
     while i < number_of_times:
         action = ActionChains(context.driver)
