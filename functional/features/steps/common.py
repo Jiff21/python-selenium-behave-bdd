@@ -8,10 +8,13 @@ from custom_exceptions import loop_thru_messages
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from settings import HOST_URL, log, PAGES_DICT
 
+
 MENU_BUTTON = (By.CSS_SELECTOR, '#menu_button_container button')
+
 
 @step('I am on "{page_name}"')
 def get(context, page_name):
@@ -79,9 +82,15 @@ def step_impl(context):
     wait = WebDriverWait(context.driver, 10)
     wait.until(EC.presence_of_element_located(MENU_BUTTON))
 
+
 @then('the url should contain "{uri}"')
 def step_impl(context, uri):
     assert uri in context.driver.current_url, "Expected {expected}, got {found}".format(
         expected=uri,
         found=context.driver.current_url
     )
+
+
+@step('I hit the Return/Enter Key')
+def step_impl(context):
+    context.current_element.send_keys(Keys.RETURN)

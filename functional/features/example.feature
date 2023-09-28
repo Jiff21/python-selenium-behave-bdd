@@ -48,3 +48,21 @@ Feature: Example tests on the Sauce Labs Inventory Page
       Given I am on "inventory"
       When I select "Name (Z to A)" from the sort selector
       Then item "1" shold be "Test.allTheThings() T-Shirt (Red)"
+
+  @browser @medium
+  Scenario: Adding item from inventory transfers to card
+    Given I am on "inventory"
+    When I Click the Bike Light Add to Cart Button
+      And I Click the Test all the things T-Shirt Add to Cart Button
+      And I click on the cart icon
+    Then the price for item "1" should be "9.99"
+      And the price for item "2" should be "15.99"
+      And I click the checkout button
+      And I fill out the contact information with "Guy" "Incognito" from the "94112"
+      And I hit the Return/Enter Key
+      And I wait for the checkout summary to load
+      And the subtotal should be "$25.98"
+      And the tax should be "$2.08"
+      And the total should be "$28.06"
+
+      
