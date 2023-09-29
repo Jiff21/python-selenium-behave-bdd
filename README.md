@@ -1,20 +1,15 @@
-# QA Stack
-
-* Behave ([Unit, End-to-End](/functional), and [Analytics](/analytics) tests)
-* [Locust](/performance) (Performance tests)
-* [Lighthouse](/accessibility) (Accessibility & Mobile Support)
-
+# BDD Python Selenoum Behave 
 
 ## Introduction
 
+A portfollio example of python selenium tests. I'm a big fan of Gherkin Syntax and Behave is one of my favorite tools to write BDD Tests. I tried to use a variety of differing selectors, interaction methods & waits to demonstrate my knowledge of selenium. I used a demo saucelaps site to minimize maintenace for my demo, but does limit how many tests I should write. 
 
 ## Install
 
 ### Dependancies
 
-Install [python 3](https://www.python.org/downloads/) and
-[Docker](https://store.docker.com/editions/community/docker-ce-desktop-mac)
-using their .dmg files. Written at Python 3.6.1 for OSX. Virtualenv (`pip3 install virtualenv`).
+* [python 3](https://www.python.org/downloads/).
+* Virtualenv (`pip3 install virtualenv`).
 
 ### Install steps
 

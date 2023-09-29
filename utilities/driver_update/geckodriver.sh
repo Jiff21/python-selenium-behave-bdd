@@ -1,11 +1,7 @@
 #!/bin/bash
 
-GECKODRIVER_REDIRECT=$(curl https://github.com/mozilla/geckodriver/releases/latest)
 
-if [[ $GECKODRIVER_REDIRECT =~ v([[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+)\"\> ]];
-then
-  LATEST_GECKODRIVER=${BASH_REMATCH[1]}
-fi
+LATEST_GECKODRIVER=$( curl -s -I -X GET https://github.com/mozilla/geckodriver/releases/latest |  grep -e '\location:*' | grep -Eo '[0-9]+\.[0-9]+\.[0-9]')
 
 echo 'Downloading Geckodriver ' $LATEST_GECKODRIVER
 if [ "$(uname)" == "Darwin" ]; then
