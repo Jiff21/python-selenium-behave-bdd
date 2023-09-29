@@ -25,6 +25,8 @@ source env/bin/activate
 pip3 install -U -r requirements.txt
 ```
 
+Or just run `./install.sh`
+
 ## Running Tests
 
 ```bash
