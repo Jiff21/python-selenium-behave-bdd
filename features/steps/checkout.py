@@ -21,7 +21,8 @@ def step_impl(context):
 
 @step('the subtotal should be "{expected_total}"')
 def step_impl(context, expected_total):
-    context.current_element = context.driver.find_element(*CHECKOUT_SUBTOTAL)
+    wait = WebDriverWait(context.driver, 10, 0.1)
+    context.current_element = wait.until(EC.visibility_of_element_located(CHECKOUT_SUBTOTAL))
     price = re.findall(r'\$.*', context.current_element.text)[0]
     assert expected_total == price, 'Expected {expected_total}, but got {total}'.format(
         expected_total=expected_total,
@@ -31,7 +32,8 @@ def step_impl(context, expected_total):
 
 @step('the tax should be "{expected_total}"')
 def step_impl(context, expected_total):
-    context.current_element = context.driver.find_element(*CHECKOUT_TAX)
+    wait = WebDriverWait(context.driver, 10, 0.1)
+    context.current_element = wait.until(EC.visibility_of_element_located(CHECKOUT_TAX))
     price = re.findall(r'\$.*', context.current_element.text)[0]
     assert expected_total == price, 'Expected {expected_total}, but got {total}'.format(
         expected_total=expected_total,
@@ -40,7 +42,8 @@ def step_impl(context, expected_total):
 
 @step('the total should be "{expected_total}"')
 def step_impl(context, expected_total):
-    context.current_element = context.driver.find_element(*CHECKOUT_TOTAL)
+    wait = WebDriverWait(context.driver, 10, 0.1)
+    context.current_element = wait.until(EC.visibility_of_element_located(CHECKOUT_TOTAL))
     price = re.findall(r'\$.*', context.current_element.text)[0]
     assert expected_total == price, 'Expected {expected_total}, but got {total}'.format(
         expected_total=expected_total,
