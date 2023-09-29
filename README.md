@@ -24,7 +24,7 @@ pip3 install -U -r requirements.txt
 ## Running Tests
 
 ```bash
-behave functional/features
+behave features
 ```
 
 
@@ -32,6 +32,9 @@ behave functional/features
 
 ```bash
 pip3 install -U -r utilities/allure/requirements.txt
+
+behave -f allure_behave.formatter:AllureFormatter -o utilities/allure/allure_results ./functionalfeatures
+
 allure generate utilities/allure/allure_results/ -o utilities/allure/allure-reports/ --clean
 allure open utilities/allure/allure-reports/
 ```

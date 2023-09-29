@@ -1,2 +1,2 @@
 [MASTER]
-init-hook='import sys,os; sys.path.append(os.getcwd()); sys.path.append(os.getcwd() + "/functional/features/steps/")'
+init-hook='import sys,os; sys.path.append(os.getcwd()); sys.path.append(os.getcwd() + "/features/steps/")'

@@ -1,8 +1,8 @@
 # -*- coding: UTF-8 -*-
 from behave import *
-from functional.features.browser import Browser
-from functional.features.steps.workarounds import LocalStorage
-from functional.features.requester import SetupRequests
+from features.browser import Browser
+from features.steps.workarounds import LocalStorage
+from features.requester import SetupRequests
 from settings import DEFAULT_WIDTH, DEFAULT_HEIGHT
 from settings import DISPLAY, XVFB_RESOLUTION
 from settings import EDITOR_EMAIL, EDITOR_PASSWORD, EDITOR_NAME

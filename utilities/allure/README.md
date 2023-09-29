@@ -44,7 +44,7 @@ HOST_URL=https://google.com behave -f allure_behave.formatter:AllureFormatter -o
 Functional:
 
 ```bash
-HOST_URL=https://google.com behave -f allure_behave.formatter:AllureFormatter -o utilities/allure/allure_results ./functional/features
+HOST_URL=https://google.com behave -f allure_behave.formatter:AllureFormatter -o utilities/allure/allure_results ./functionalfeatures
 ```
 
 Analytics:
