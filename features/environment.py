@@ -113,8 +113,8 @@ def before_scenario(context, scenario):
 
 def after_scenario(context, scenario):
     '''Quits chromedriver at end of scernario when usng chrome'''
-    if ('skip' not in context.tags):
-        if is_not_chromedriver() is True and 'chrome-only' in context.tags:
+    if ('skip' not in context.tags and 'requests' not in context.tags):
+        if is_not_chromedriver() is True:
             return
         else:
             context.driver.quit()

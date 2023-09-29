@@ -18,7 +18,7 @@ MENU_BUTTON = (By.CSS_SELECTOR, '#menu_button_container button')
 def get(context, page_name):
     context.page_name = page_name.lower()
     context.current_url = HOST_URL + PAGES_DICT[context.page_name]
-    print('On this url %s' % context.current_url)
+    log.debug('On this url %s' % context.current_url)
     context.driver.get(context.current_url)
 
 
@@ -26,11 +26,20 @@ def get(context, page_name):
 def get(context, page_name):
     context.page_name = page_name.lower()
     context.current_url = HOST_URL + PAGES_DICT[context.page_name]
-    print('Getting this url with reqests %s' % context.current_url)
+    log.debug('Getting this url with reqests %s' % context.current_url)
     context.response = context.session.get(context.current_url)
     # pylint: disable=E1101
     assert context.response.status_code is requests.codes.ok, \
     ' Unexpectedly got a %d response code' % context.response.status_code
+
+
+@step('it should have a "{code:d}" status code')
+def step_impl(context, code):
+    assert context.response.status_code == code, \
+    'Did not get {expected} status code on response, instead {resullt}'.format(
+        expected = code,
+        resullt = context.response.status_code
+    )
 
 
 @step('I check the console logs')
@@ -92,3 +101,5 @@ def step_impl(context, uri):
 @step('I hit the Return/Enter Key')
 def step_impl(context):
     context.current_element.send_keys(Keys.RETURN)
+
+
