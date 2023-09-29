@@ -2,7 +2,11 @@
 
 ## Introduction
 
-A portfollio example of python selenium tests. I'm a big fan of Gherkin Syntax and Behave is one of my favorite tools to write BDD Tests. I tried to use a variety of differing selectors, interaction methods & waits to demonstrate my knowledge of selenium. I used a demo saucelaps site to minimize maintenace for my demo, but does limit how many tests I should write. 
+A portfollio example of python selenium tests. I'm a big fan of Gherkin Syntax and Behave is one of my favorite tools to write BDD Tests. The feature files give people context to what is expected and how it failed faster than if they needed to go read all the test functions to catch up on how the test is setting up and what it expected.
+
+See [products.feature](/features/prodicts.feature) or any of the other [feature files](/features/prodicts.feature), to get an idea how easy figure out what's going on. If you're unfamiliar with behaves folder structure go to the [steps directory](/features/steps)] for code samples.
+
+I used a variety of differing selectors, interaction methods & waits to demonstrate my knowledge of selenium. I chose to write the tests against a saucelabs demo site to minimize maintenace, but does limit what I have to test in a way where not everythning I can do wil be on display in this demo. 
 
 ## Install
 
