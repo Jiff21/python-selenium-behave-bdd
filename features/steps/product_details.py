@@ -3,7 +3,12 @@
 import re
 import requests
 from behave import step, then
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
 from settings import HOST_URL
+
+
+DETAILS_ADD_TO_CART = (By.CSS_SELECTOR, '.btn_inventory')
 
 
 @then('the header "{header}" should contain "{expected}"')
@@ -31,3 +36,11 @@ def get(context, page_name):
         expected = page_name, 
         url = context.response.url
     )
+
+
+@step(u'I hover over the add to cart button')
+def get(context):
+    context.current_element = context.driver.find_element(*DETAILS_ADD_TO_CART)
+    actions = ActionChains(context.driver)
+    actions.move_to_element(context.current_element)
+    actions.perform()
