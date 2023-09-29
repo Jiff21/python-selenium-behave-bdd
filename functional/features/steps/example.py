@@ -1,5 +1,5 @@
 ''' Step definition for check_once.feature'''
-# pylint: disable=missing-function-docstring,attribute-defined-outside-init,consider-using-f-string,too-many-public-methods,function-redefined,unused-import
+# pylint: disable=missing-function-docstring,consider-using-f-string,function-redefined
 
 from behave import step, then
 from selenium.webdriver.common.action_chains import ActionChains
@@ -7,6 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.ui import Select
+# pylint: disable=unused-import
 from name_form import first_name, last_name, zip_code
 
 # Locator Map

@@ -88,7 +88,7 @@ class LocalStorage:
             "  items[k = ls.key(i)] = ls.getItem(k); " \
             "return items; ")
 
-    def keys() :
+    def keys(self) :
         return self.driver.execute_script( \
             "var ls = window.localStorage, keys = []; " \
             "for (var i = 0; i < ls.length; ++i) " \
@@ -96,16 +96,25 @@ class LocalStorage:
             "return keys; ")
 
     def get_all(self):
-        return self.driver.execute_script("return window.localStorage.getItem(arguments[0]);", key)
+        return self.driver.execute_script(
+            "return window.localStorage.getItem(arguments[0]);"
+        )
 
     def set(self, key, value):
-        self.driver.execute_script("window.localStorage.setItem(arguments[0], arguments[1]);", key, value)
+        self.driver.execute_script(
+            "window.localStorage.setItem(arguments[0], arguments[1]);", 
+            key,
+            value
+        )
 
     def has(self, key):
         return key in self.keys()
 
     def remove(self, key):
-        self.driver.execute_script("window.localStorage.removeItem(arguments[0]);", key)
+        self.driver.execute_script(
+            "window.localStorage.removeItem(arguments[0]);",
+            key
+        )
 
     def clear(self):
         self.driver.execute_script("window.localStorage.clear();")
