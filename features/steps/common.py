@@ -29,6 +29,16 @@ def get(context, page_name):
     context.driver.get(context.current_url)
 
 
+@step('I should be on "{page_name}"')
+def get(context, page_name):
+    context.page_name = page_name.lower()
+    assert PAGES_DICT[context.page_name] in context.driver.current_url, \
+        'Expected to be at {expected}, but wound up at {result}'.format(
+            expected=PAGES_DICT[context.page_name],
+            result=context.driver.current_url
+        )
+
+
 @step('I get "{page_name}" with requests session')
 def get(context, page_name):
     context.page_name = page_name.lower()

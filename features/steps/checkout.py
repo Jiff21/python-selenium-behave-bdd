@@ -103,8 +103,6 @@ def step_impl(context):
     context.current_element.click()
 
 
-
-
 @step('the checkout info pages shows one validation error')
 def step_impl(context):
     error_messages = context.driver.find_elements(*CHECKOUT_INFO_VALIDATION_MESSAGE)
