@@ -6,7 +6,7 @@ from features.requester import SetupRequests
 from settings import DEFAULT_WIDTH, DEFAULT_HEIGHT
 from settings import DISPLAY, XVFB_RESOLUTION
 from settings import EDITOR_EMAIL, EDITOR_PASSWORD, EDITOR_NAME
-from settings import HOST_URL, DRIVER, QA_ENV, log
+from settings import DRIVER, HOST_URL, JIRA_PROJECT_ABBR, log, QA_ENV
 from settings import MOBILE_WIDTH, MOBILE_HEIGHT
 from settings import TABLET_WIDTH, TABLET_HEIGHT
 from selenium.webdriver.support.ui import WebDriverWait
@@ -113,8 +113,7 @@ def before_scenario(context, scenario):
 
 def after_scenario(context, scenario):
     '''Quits chromedriver at end of scernario when usng chrome'''
-    if ('skip' not in context.tags and 'requests' not in context.tags):
-        if is_not_chromedriver() is True:
-            return
-        else:
-            context.driver.quit()
+    if (is_not_chromedriver() is True and 'local-only' in context.tags):
+        return
+    if ('skip' not in context.tags and 'browser' in context.tags):
+        context.driver.quit()
