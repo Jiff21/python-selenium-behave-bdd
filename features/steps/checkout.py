@@ -10,10 +10,15 @@ from workarounds import SessionStorage
 
 CHECKOUT_BODY = (By.ID, 'checkout_summary_container')
 CHECKOUT_CART_ITEM = (By.CSS_SELECTOR, '.cart_item')
+CHECKOUT_INFO_SUBMIT = (By.XPATH, '//*[@type="submit"]')
+CHECKOUT_INFO_VALIDATION_MESSAGE =  (By.XPATH, '//*[@data-test="error"]')
+CHECKOUT_FINISH_BUTTON = (By.LINK_TEXT, 'FINISH')
+CHECKOUT_FIRST_NAME = (By.ID, 'first-name')
+CHECKOUT_LAST_NAME = (By.ID, 'last-name')
 CHECKOUT_SUBTOTAL = (By.CSS_SELECTOR, '.summary_subtotal_label')
 CHECKOUT_TAX = (By.CSS_SELECTOR, '.summary_tax_label')
 CHECKOUT_TOTAL = (By.CSS_SELECTOR, '.summary_total_label')
-FINISH_BUTTON = (By.LINK_TEXT, 'FINISH')
+CHECKOUT_ZIP_CODE = (By.ID, 'postal-code')
 
 
 @step('I wait for the checkout summary to load')
@@ -49,6 +54,7 @@ def step_impl(context, expected_total):
         total=price
     )
 
+
 @step('the total should be "{expected_total}"')
 def step_impl(context, expected_total):
     wait = WebDriverWait(context.driver, 10, 0.1)
@@ -59,6 +65,7 @@ def step_impl(context, expected_total):
         total=price
     )
 
+
 @step('I fill up the cart with all items')
 def step_impl(context):
     session = SessionStorage(context.driver, 'cart-contents', '[0, 1, 2, 3, 4, 5]')
@@ -68,5 +75,48 @@ def step_impl(context):
 @step('I click the finish button')
 def step_impl(context):
     wait = WebDriverWait(context.driver, 10, 0.1)
-    context.current_element = wait.until(EC.element_to_be_clickable(FINISH_BUTTON))
+    context.current_element = wait.until(EC.element_to_be_clickable(CHECKOUT_FINISH_BUTTON))
     context.current_element.click()
+
+
+@step('I type "{text}" into the checkout first name field')
+def step_impl(context, text):
+    context.current_element = context.wait.until(EC.element_to_be_clickable(CHECKOUT_FIRST_NAME))
+    context.current_element.send_keys(text)
+
+
+@step('I type "{text}" into the checkout last name field')
+def step_impl(context, text):
+    context.current_element = context.wait.until(EC.element_to_be_clickable(CHECKOUT_LAST_NAME))
+    context.current_element.send_keys(text)
+
+
+@step('I type "{text}" into the checkout zip code field')
+def step_impl(context, text):
+    context.current_element = context.wait.until(EC.element_to_be_clickable(CHECKOUT_ZIP_CODE))
+    context.current_element.send_keys(text)
+
+
+@step('I click the continue button on the checkout info page')
+def step_impl(context):
+    context.current_element = context.wait.until(EC.element_to_be_clickable(CHECKOUT_INFO_SUBMIT))
+    context.current_element.click()
+
+
+
+
+@step('the checkout info pages shows one validation error')
+def step_impl(context):
+    error_messages = context.driver.find_elements(*CHECKOUT_INFO_VALIDATION_MESSAGE)
+    assert len(error_messages) > 0 and len(error_messages) < 2, 'Expected 1 validation error' \
+        ', found {} error elements'.format(len(error_messages))
+
+
+@step('the checkout info pages validation error should include "{string}"')
+def step_impl(context, string):
+    context.current_element = context.driver.find_element(*CHECKOUT_INFO_VALIDATION_MESSAGE)
+    assert string in context.current_element.text, \
+        'Expected "{expected}" to be error message, "{result}"'.format(
+            expected=string,
+            result=context.current_element.text
+        )
