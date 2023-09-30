@@ -13,6 +13,7 @@ USERNAME_LOCATOR = (By.ID, 'user-name')
 PASSWORD_LOCATOR = (By.ID, 'password')
 LOGIN_BUTTON = (By.ID, 'login-button')
 VALIDATIOR_ERROR = (By.CSS_SELECTOR, '.error-button')
+ERROR_MESSAGE = (By.XPATH, '//*[@data-test="error"]')
 
 
 @step('I click on the Username field')
@@ -39,14 +40,15 @@ def step_impl(context):
 @step('there should be one validation error')
 def step_impl(context):
     error_messages = context.driver.find_elements(*VALIDATIOR_ERROR)
-    assert len(error_messages) > 0 and len(error_messages) < 1, 'Expected 1 validation error' \
+    assert len(error_messages) > 0 and len(error_messages) < 2, 'Expected 1 validation error' \
         ', found {} error elements'.format(len(error_messages))
 
 
 @step('the validation error should include "{string}"')
 def step_impl(context, string):
-    context.current_element = context.driver.find_element(*VALIDATIOR_ERROR)
-    assert string in context.current_element.text, 'Expected "{expected}" to but in "{result}"'.format(
-        expected=string,
-        result=context.current_element.text
-    )
+    context.current_element = context.driver.find_element(*ERROR_MESSAGE)
+    assert string in context.current_element.text, \
+        'Expected "{expected}" to be error message, "{result}"'.format(
+            expected=string,
+            result=context.current_element.text
+        )
