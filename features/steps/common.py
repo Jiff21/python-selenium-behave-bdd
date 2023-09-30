@@ -73,6 +73,7 @@ def step_impl(context):
                 )
             )
 
+
 @step('there should be no severe console log errors')
 def step_impl(context):
     assert len(context.console_errors) == 0, loop_thru_messages(context.console_errors)

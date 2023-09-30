@@ -6,6 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from workarounds import SessionStorage
+from selenium.webdriver.common.action_chains import ActionChains
 
 
 CHECKOUT_BODY = (By.ID, 'checkout_summary_container')
@@ -93,7 +94,8 @@ def step_impl(context, text):
 
 @step('I type "{text}" into the checkout zip code field')
 def step_impl(context, text):
-    context.current_element = context.wait.until(EC.element_to_be_clickable(CHECKOUT_ZIP_CODE))
+    wait = WebDriverWait(context.driver, 15, 0.1)
+    context.current_element = wait.until(EC.element_to_be_clickable(CHECKOUT_ZIP_CODE))
     context.current_element.send_keys(text)
 
 
