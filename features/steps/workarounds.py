@@ -118,3 +118,17 @@ class LocalStorage:
 
     def clear(self):
         self.driver.execute_script("window.localStorage.clear();")
+
+
+class SessionStorage:
+    '''helper class for working with locale storage'''
+
+    def __init__(self, driver) :
+        self.driver = driver
+
+    def set(self, key, value):
+        self.driver.execute_script(
+            "window.sessionStorage.setItem(arguments[0], arguments[1]);", 
+            key,
+            value
+        )

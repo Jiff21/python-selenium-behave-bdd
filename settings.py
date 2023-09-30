@@ -101,7 +101,8 @@ SL_DC = os.getenv(
 PAGES_DICT = {
     'bolt t-shirt details': '/inventory-item.html?id=1',
     'cart': '/cart.html',
-    'checkout':'/checkout-step-one.html',
+    'checkout info':'/checkout-step-one.html',
+    'checkout overview':'/checkout-step-two.html',
     'index': '/',
     'inventory':'/inventory.html'
 }

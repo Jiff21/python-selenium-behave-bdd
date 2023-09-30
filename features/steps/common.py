@@ -12,7 +12,13 @@ from settings import HOST_URL, log, PAGES_DICT
 
 
 MENU_BUTTON = (By.CSS_SELECTOR, '#menu_button_container button')
-
+PRODUCTS_SAUCE_LABS_TSHIRT_TITLE = (By.ID, 'item_1_title_link')
+SAUCE_LABS_TSHIRT_ADD_REMOVE = (
+    By.XPATH,
+    '//*[contains(text(), "Sauce Labs Bolt T-Shirt")]/ancestor::div[contains'
+    '(@class, "inventory_item")]/div[contains(@class, "pricebar")]//button'
+)
+CHECKOUT_COMPLETE_HEADER = (By.CSS_SELECTOR, '#checkout_complete_container h2')
 
 @step('I am on "{page_name}"')
 def get(context, page_name):
@@ -101,5 +107,30 @@ def step_impl(context, uri):
 @step('I hit the Return/Enter Key')
 def step_impl(context):
     context.current_element.send_keys(Keys.RETURN)
+
+
+
+@step('I Click on the title for Sauce Labs T-Shift')
+def click_sauce_labs_tee(context):
+    context.current_element = context.driver.find_element(*PRODUCTS_SAUCE_LABS_TSHIRT_TITLE)
+    context.current_element.click()
+
+
+@then(u'the Sauce Labs Bolt Shirt button should be in remove state')
+def get(context):
+    wait = WebDriverWait(context.driver, 10, 0.2)
+    context.current_element = wait.until(EC.element_to_be_clickable(SAUCE_LABS_TSHIRT_ADD_REMOVE))
+    assert context.current_element.text == 'REMOVE', 'Button had "{}" text'.format(
+        context.current_element.text
+    )
+
+
+@step('the checkout complete header should appear')
+def click_sauce_labs_tee(context):
+    wait = WebDriverWait(context.driver, 10, 0.2)
+    context.current_element = wait.until(EC.visibility_of_element_located(CHECKOUT_COMPLETE_HEADER))
+    assert context.current_element.text == "THANK YOU FOR YOUR ORDER", \
+        'Did not get expected success text, instead {}'.format(context.current_element.text)
+
 
 
