@@ -1,16 +1,15 @@
+'''setup file for behave'''
+# pylint: disable=consider-using-f-string,too-many-public-methods,unused-argument,wildcard-import,too-many-branches,unused-wildcard-import
+
 # -*- coding: UTF-8 -*-
 from behave import *
+from selenium.webdriver.support.ui import WebDriverWait
 from features.browser import Browser
 from features.steps.workarounds import LocalStorage
 from features.requester import SetupRequests
-from settings import DEFAULT_WIDTH, DEFAULT_HEIGHT
-from settings import DISPLAY, XVFB_RESOLUTION
-from settings import EDITOR_EMAIL, EDITOR_PASSWORD, EDITOR_NAME
-from settings import DRIVER, HOST_URL, JIRA_PROJECT_ABBR, log, QA_ENV
+from settings import DRIVER, JIRA_PROJECT_ABBR, log, QA_ENV
 from settings import MOBILE_WIDTH, MOBILE_HEIGHT
 from settings import TABLET_WIDTH, TABLET_HEIGHT
-from selenium.webdriver.support.ui import WebDriverWait
-
 
 
 def get_jira_number_from_tags(context):
@@ -21,6 +20,7 @@ def get_jira_number_from_tags(context):
     for tag in context.tags:
         if JIRA_PROJECT_ABBR in tag:
             return tag
+    return None
 
 
 def dismiss_cookie_consent(driver):
@@ -42,12 +42,10 @@ def is_not_chromedriver():
 
 def before_all(context):
     '''leaving setup function, currently unused'''
-    pass
 
 
 def after_all(context):
     '''leaving cleanup function, currently unused'''
-    pass
 
 
 def before_feature(context, feature):
@@ -57,9 +55,10 @@ def before_feature(context, feature):
         current_driver = str('tested_in_' + DRIVER)
         feature.tags.append(current_driver)
 
+
 def after_feature(context, feature):
     '''leaving cleanup function, currently unused'''
-    pass
+
 
 def before_scenario(context, scenario):
     '''Setup function, works off behave tags to skip tests only supported on certain scenarios'''
@@ -97,18 +96,18 @@ def before_scenario(context, scenario):
                 context.driver.capabilities['browserVersion']
             )
     else:
+        log.driver('driver set to None')
         context.driver = None
     if 'requests' in context.tags:
+        log.driver('Setting up requests session')
         requester = SetupRequests()
         context.session = requester.setup_session()
     if context.driver is not None:
-        context.wait = WebDriverWait(context.driver, 20, 0.25)
+        context.wait = WebDriverWait(context.driver, 10, 0.1)
         if 'mobile' in context.tags:
             context.driver.set_window_size(MOBILE_WIDTH, MOBILE_HEIGHT)
         if 'tablet' in context.tags:
             context.driver.set_window_size(TABLET_WIDTH, TABLET_HEIGHT)
-        if 'not-logged-in' in context.tags:
-            delete_firebase_cookies(context.driver)
 
 
 def after_scenario(context, scenario):

@@ -28,4 +28,3 @@ Feature: Tests that should be run on every page
       And I click on the Login Button
     Then there should be one validation error
       And the validation error should include "Password is required"
-
