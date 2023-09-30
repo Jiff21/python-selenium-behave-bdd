@@ -1,15 +1,9 @@
 ''' helper functiona for dealing with tabs and scrolling help for Firefox '''
-# pylint: disable=missing-function-docstring,attribute-defined-outside-init,consider-using-f-string,too-many-public-methods,function-redefined,unused-import
+# pylint: disable=missing-function-docstring,attribute-defined-outside-init,consider-using-f-string,too-many-public-methods,function-redefined,R0903
 import time
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import ElementNotVisibleException
-from selenium.common.exceptions import ElementNotSelectableException
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.support.ui import WebDriverWait
-
+from settings import log
 
 def scroll_to_webelement(driver, web_element):
     '''
@@ -52,11 +46,11 @@ def make_sure_safari_back_on_only_window(driver):
     '''
     if 'safari' in driver.capabilities['browserName']:
         if len(driver.window_handles) > 1:
-            print('Waiting for only 1 tab')
+            log.debug('Waiting for only 1 tab')
             time.sleep(0.25)
             make_sure_safari_back_on_only_window(driver)
         else:
-            print('Only 1 tab open!')
+            log.debug('Only 1 tab open!')
             driver.switch_to_window(driver.window_handles[0])
 
 
@@ -65,7 +59,7 @@ def safari_text_shim(selector_type, text_to_find, driver):
     all_els = driver.find_elements(By.CSS_SELECTOR, selector_type)
     for element in all_els:
         if text_to_find in element.text:
-            print('Found text: %s' % element.text)
+            log.debug('Found text: %s', element.text)
             actions = ActionChains(driver)
             actions.move_to_element(element)
             actions.click()
@@ -123,12 +117,14 @@ class LocalStorage:
 class SessionStorage:
     '''helper class for working with locale storage'''
 
-    def __init__(self, driver) :
+    def __init__(self, driver, key, value):
         self.driver = driver
+        self.key = key
+        self.value = value
 
-    def set(self, key, value):
+    def set(self):
         self.driver.execute_script(
             "window.sessionStorage.setItem(arguments[0], arguments[1]);", 
-            key,
-            value
+            self.key,
+            self.value
         )

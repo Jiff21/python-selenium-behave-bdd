@@ -16,15 +16,15 @@ BIKE_LIGHT_BUTTON = (
     '//*[contains(text(), "Sauce Labs Bike Light")]/ancestor::div[contains'
     '(@class, "inventory_item")]/div[contains(@class, "pricebar")]//button'
 )
+CART_ICON = (By.CSS_SELECTOR, '#shopping_cart_container > a')
+CART_BADGE = (By.CSS_SELECTOR, '.shopping_cart_badge')
+CHECKOUT_BUTTON = (By.CSS_SELECTOR, 'a.checkout_button')
+SORT_SELECTOR = (By.CSS_SELECTOR, 'select.product_sort_container')
 TEST_ALL_TSHIRT = (
     By.XPATH,
     '//*[contains(text(), "Test.allTheThings() T-Shirt (Red)")]/ancestor::div[contains'
     '(@class, "inventory_item")]/div[contains(@class, "pricebar")]//button'
 )
-CART_ICON = (By.CSS_SELECTOR, '#shopping_cart_container > a')
-CART_BADGE = (By.CSS_SELECTOR, '.shopping_cart_badge')
-CHECKOUT_BUTTON = (By.CSS_SELECTOR, 'a.checkout_button')
-SORT_SELECTOR = (By.CSS_SELECTOR, 'select.product_sort_container')
 
 
 @step('I Click the Bike Light Add to Cart Button')

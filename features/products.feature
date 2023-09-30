@@ -50,11 +50,12 @@ Feature: Example tests on the Sauce Labs Inventory Page
       Then item "1" shold be "Test.allTheThings() T-Shirt (Red)"
 
   @browser @medium
-  Scenario: Adding item from inventory transfers to card
+  Scenario: Adding item from inventory transfers to cart
     Given I am on "inventory"
     When I Click the Bike Light Add to Cart Button
       And I Click the Test all the things T-Shirt Add to Cart Button
       And I click on the cart icon
+      And I wait for at least one cart item to load
     Then the price for item "1" should be "9.99"
       And the price for item "2" should be "15.99"
       And I click the checkout button
@@ -64,5 +65,6 @@ Feature: Example tests on the Sauce Labs Inventory Page
       And the subtotal should be "$25.98"
       And the tax should be "$2.08"
       And the total should be "$28.06"
-
+      And I click the finish button
+      And the checkout complete header should appear
       

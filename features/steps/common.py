@@ -20,11 +20,12 @@ SAUCE_LABS_TSHIRT_ADD_REMOVE = (
 )
 CHECKOUT_COMPLETE_HEADER = (By.CSS_SELECTOR, '#checkout_complete_container h2')
 
+
 @step('I am on "{page_name}"')
 def get(context, page_name):
     context.page_name = page_name.lower()
     context.current_url = HOST_URL + PAGES_DICT[context.page_name]
-    log.debug('On this url %s' % context.current_url)
+    log.debug('On this url %s' , context.current_url)
     context.driver.get(context.current_url)
 
 
@@ -32,11 +33,11 @@ def get(context, page_name):
 def get(context, page_name):
     context.page_name = page_name.lower()
     context.current_url = HOST_URL + PAGES_DICT[context.page_name]
-    log.debug('Getting this url with reqests %s' % context.current_url)
+    log.debug('Getting this url with reqests %s', context.current_url)
     context.response = context.session.get(context.current_url)
     # pylint: disable=E1101
     assert context.response.status_code is requests.codes.ok, \
-    ' Unexpectedly got a %d response code' % context.response.status_code
+    ' Unexpectedly got a {} response code'.format(context.response.status_code)
 
 
 @step('it should have a "{code:d}" status code')
@@ -116,7 +117,7 @@ def click_sauce_labs_tee(context):
     context.current_element.click()
 
 
-@then(u'the Sauce Labs Bolt Shirt button should be in remove state')
+@then('the Sauce Labs Bolt Shirt button should be in remove state')
 def get(context):
     wait = WebDriverWait(context.driver, 10, 0.2)
     context.current_element = wait.until(EC.element_to_be_clickable(SAUCE_LABS_TSHIRT_ADD_REMOVE))
@@ -131,6 +132,3 @@ def click_sauce_labs_tee(context):
     context.current_element = wait.until(EC.visibility_of_element_located(CHECKOUT_COMPLETE_HEADER))
     assert context.current_element.text == "THANK YOU FOR YOUR ORDER", \
         'Did not get expected success text, instead {}'.format(context.current_element.text)
-
-
-

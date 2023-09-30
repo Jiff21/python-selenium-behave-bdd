@@ -61,8 +61,8 @@ def step_impl(context, expected_total):
 
 @step('I fill up the cart with all items')
 def step_impl(context):
-    session = SessionStorage(context.driver)
-    session.set('cart-contents','[0, 1, 2, 3, 4, 5]')
+    session = SessionStorage(context.driver, 'cart-contents', '[0, 1, 2, 3, 4, 5]')
+    session.set()
 
 
 @step('I click the finish button')
@@ -70,5 +70,3 @@ def step_impl(context):
     wait = WebDriverWait(context.driver, 10, 0.1)
     context.current_element = wait.until(EC.element_to_be_clickable(FINISH_BUTTON))
     context.current_element.click()
-
-

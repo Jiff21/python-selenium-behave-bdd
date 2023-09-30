@@ -13,3 +13,18 @@ Feature: The detaails page works as expected
     Given I am on "bolt t-shirt details"
     When I hover over the add to cart button
     Then it should have a background-color of "239, 239, 239"
+
+  @browser @medium @skip @KEY-1
+  Scenario: Adding to cart from the details page persists on other pages
+    Given I am on "bolt t-shirt details"
+      And I click the add to cart button
+    When I click the back button
+    Then the Sauce Labs Bolt Shirt button should be in remove state
+
+@browser @medium @skip @KEY-1
+  Scenario: Adding to cart from the details page persists workaround for direct page bug
+    Given I am on "inventory"
+      And I Click on the title for Sauce Labs T-Shift
+    When I click the add to cart button
+       And I click the back button
+    Then the Sauce Labs Bolt Shirt button should be in remove state
