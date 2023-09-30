@@ -1,4 +1,4 @@
-Feature: The detaails page works as expected
+Feature: The details page works as expected
 
   @requests @medium
   Scenario: An API Test example, but no good endpoints on site to test
@@ -8,7 +8,7 @@ Feature: The detaails page works as expected
       And the response should use https
       And the response url should include "/inventory-item.html?id=1"
 
-  @browser @minor
+  @browser @trivial
   Scenario: Hovering state on the Add to Cart Buttton works on a Product Details page
     Given I am on "bolt t-shirt details"
     When I hover over the add to cart button

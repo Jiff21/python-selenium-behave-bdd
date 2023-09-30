@@ -99,7 +99,7 @@ def before_scenario(context, scenario):
         log.driver('driver set to None')
         context.driver = None
     if 'requests' in context.tags:
-        log.driver('Setting up requests session')
+        log.info('Setting up requests session')
         requester = SetupRequests()
         context.session = requester.setup_session()
     if context.driver is not None:

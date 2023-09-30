@@ -12,8 +12,7 @@ ZIP_CODE_FIELD = (By.CSS_SELECTOR, 'input[placeholder="Zip/Postal Code"]')
 
 @step('I enter "{name}" into the first name field')
 def first_name(context, name):
-    wait = WebDriverWait(context.driver, 10, 0.1)
-    wait.until(EC.element_to_be_clickable(FIRST_NAME_FIELD)).send_keys(name)
+    context.wait.until(EC.element_to_be_clickable(FIRST_NAME_FIELD)).send_keys(name)
 
 
 @step('I enter "{name}" into the last name field')

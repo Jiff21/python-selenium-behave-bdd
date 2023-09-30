@@ -8,21 +8,21 @@ log = logging.getLogger("debug_logger")
 # use `export QA_ENV=name` to set the current envionrment you're testing against
 QA_ENV = os.getenv('QA_ENV', 'local').lower()
 if 'test' in QA_ENV:
-    print('Loading Testing Environment variables')
+    log.info('Loading Testing Environment variables')
     load_dotenv(dotenv_path='./secrets/testing.env', verbose=True)
     IAP_ON = True
 elif 'dev' in QA_ENV:
-    print('Loading Dev Environment variables')
+    log.info('Loading Dev Environment variables')
     load_dotenv(dotenv_path='./secrets/dev.env')
 elif 'stag' in QA_ENV:
-    print('Loading Staging Environment variables')
+    log.info('Loading Staging Environment variables')
     load_dotenv(dotenv_path='./secrets/staging.env')
 elif 'production' in QA_ENV or 'live' in QA_ENV:
-    print('Loading Production Environment variables')
+    log.info('Loading Production Environment variables')
     load_dotenv(dotenv_path='./secrets/production.env')
 else:
     assert QA_ENV == 'local', 'Unrecognized ENV name'
-    print('Using default Environment variables')
+    log.info('Using default Environment variables')
 
 ########
 # Overwritten by ENV files
@@ -153,5 +153,5 @@ default_headers = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36, QA Tests'
 }
 
-print(HOST_URL)
-print('Proxy passthrough set to {}'.format(PROXY_PASSTHROUGH))
+log.info('Host url set to %', HOST_URL)
+log.info('Proxy passthrough set to %', PROXY_PASSTHROUGH)

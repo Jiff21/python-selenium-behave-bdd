@@ -33,7 +33,7 @@ def safari_window_switcher(context, title):
             context.driver.switch_to_window(context.driver.window_handles[i])
             if context.driver.title == context.expected_title:
                 context.handle_to_switch_to = context.driver.current_window_handle
-        print(context.driver.title)
+                log.info('On Window titled: %', context.driver.title)
         context.driver.switch_to_window(context.handle_to_switch_to)
         assert context.driver.title == context.expected_title, \
             'Safari swindow switching issue at %s' % context.driver.current_url
@@ -46,7 +46,7 @@ def make_sure_safari_back_on_only_window(driver):
     '''
     if 'safari' in driver.capabilities['browserName']:
         if len(driver.window_handles) > 1:
-            log.debug('Waiting for only 1 tab')
+            log.debug('Waiting for only 1 tab, Safari flaky without buffer')
             time.sleep(0.25)
             make_sure_safari_back_on_only_window(driver)
         else:

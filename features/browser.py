@@ -4,7 +4,7 @@
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from settings import DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_BROWSER_POSITION
-from settings import DRIVER, SELENIUM, SL_DC
+from settings import DRIVER, log, SELENIUM, SL_DC
 
 def dict_from_string(current_dict, string):
     for item in string.split(','):
@@ -16,7 +16,7 @@ class Browser():
     '''Configuratins saved to easily setup different browsers'''
 
     def __init__(self):
-        print('Loading normal browser list')
+        log.info('Loading normal browser list')
 
     def set_defaults(self, browser_obj):
         ''' 
@@ -348,7 +348,7 @@ class Browser():
 
     def get_driver_by_name(self, name):
         '''Returns driver based on name'''
-        print('Getting Custom Driver: %s' % name)
+        log.info('Getting Custom Driver: %s' % name)
         drivers = self.return_driver_dict()
         if DRIVER not in drivers:
             raise EnvironmentError('Unrecognized driver: {}'.format(DRIVER))

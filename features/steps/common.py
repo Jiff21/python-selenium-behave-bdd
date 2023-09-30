@@ -104,8 +104,7 @@ def step_impl(context, text):
 
 @step('I wait for the Menu button')
 def step_impl(context):
-    wait = WebDriverWait(context.driver, 10)
-    wait.until(EC.presence_of_element_located(MENU_BUTTON))
+    context.wait.until(EC.presence_of_element_located(MENU_BUTTON))
 
 
 @then('the url should contain "{uri}"')
@@ -130,8 +129,7 @@ def click_sauce_labs_tee(context):
 
 @then('the Sauce Labs Bolt Shirt button should be in remove state')
 def get(context):
-    wait = WebDriverWait(context.driver, 10, 0.2)
-    context.current_element = wait.until(EC.element_to_be_clickable(SAUCE_LABS_TSHIRT_ADD_REMOVE))
+    context.current_element = context.wait.until(EC.element_to_be_clickable(SAUCE_LABS_TSHIRT_ADD_REMOVE))
     assert context.current_element.text == 'REMOVE', 'Button had "{}" text'.format(
         context.current_element.text
     )
@@ -139,7 +137,6 @@ def get(context):
 
 @step('the checkout complete header should appear')
 def click_sauce_labs_tee(context):
-    wait = WebDriverWait(context.driver, 10, 0.2)
-    context.current_element = wait.until(EC.visibility_of_element_located(CHECKOUT_COMPLETE_HEADER))
+    context.current_element = context.wait.until(EC.visibility_of_element_located(CHECKOUT_COMPLETE_HEADER))
     assert context.current_element.text == "THANK YOU FOR YOUR ORDER", \
         'Did not get expected success text, instead {}'.format(context.current_element.text)

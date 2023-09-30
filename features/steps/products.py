@@ -98,8 +98,7 @@ def step_impl(context, num, price):
 
 @step('I click the checkout button')
 def step_impl(context):
-    wait = WebDriverWait(context.driver, 10, 0.1)
-    checkout_button = wait.until(EC.element_to_be_clickable(CHECKOUT_BUTTON))
+    checkout_button = context.wait.until(EC.element_to_be_clickable(CHECKOUT_BUTTON))
     actions = ActionChains(context.driver)
     actions.move_to_element(checkout_button)
     actions.click()

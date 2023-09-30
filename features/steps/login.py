@@ -18,22 +18,19 @@ ERROR_MESSAGE = (By.XPATH, '//*[@data-test="error"]')
 
 @step('I click on the Username field')
 def step_impl(context):
-    wait = WebDriverWait(context.driver, 10)
-    context.current_element = wait.until(EC.visibility_of_element_located(USERNAME_LOCATOR))
+    context.current_element = context.wait.until(EC.visibility_of_element_located(USERNAME_LOCATOR))
     context.current_element.click()
 
 
 @step('I click on the Password field')
 def step_impl(context):
-    wait = WebDriverWait(context.driver, 10)
-    context.current_element = wait.until(EC.visibility_of_element_located(PASSWORD_LOCATOR))
+    context.current_element = context.wait.until(EC.visibility_of_element_located(PASSWORD_LOCATOR))
     context.current_element.click()
 
 
 @step('I click on the Login Button')
 def step_impl(context):
-    wait = WebDriverWait(context.driver, 10)
-    context.current_element = wait.until(EC.visibility_of_element_located(LOGIN_BUTTON))
+    context.current_element = context.wait.until(EC.visibility_of_element_located(LOGIN_BUTTON))
     context.current_element.click()
 
 
