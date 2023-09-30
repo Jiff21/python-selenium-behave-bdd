@@ -96,7 +96,7 @@ def before_scenario(context, scenario):
                 context.driver.capabilities['browserVersion']
             )
     else:
-        log.driver('driver set to None')
+        log.info('driver set to None')
         context.driver = None
     if 'requests' in context.tags:
         log.info('Setting up requests session')

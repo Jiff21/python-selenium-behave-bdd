@@ -40,7 +40,6 @@ For a prettier report checkout [Allure](https://docs.qameta.io/allure/) reports 
 ### Install
 
 ```bash
-pip3 install -U -r utilities/allure/requirements.txt
 brew install allure
 ```
 

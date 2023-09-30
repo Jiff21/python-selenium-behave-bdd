@@ -2,15 +2,23 @@
 '''Configuratins saved to easily setup different browsers'''
 
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.firefox.service import Service as FirefoxService
 from settings import DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_BROWSER_POSITION
 from settings import DRIVER, log, SELENIUM, SL_DC
+
+
+CHROME_PATH = './env/bin/chromedriver'
+FIREFOX_PATH = './env/bin/geckodriver'
+
 
 def dict_from_string(current_dict, string):
     for item in string.split(','):
         key, value = item.split(':')
         current_dict[key.strip(' \"}{:')] = value.strip(' \"}{:')
     return current_dict
+
 
 class Browser():
     '''Configuratins saved to easily setup different browsers'''
@@ -34,31 +42,17 @@ class Browser():
     def mandatory_chrome_options(self):
         self.chrome_options = webdriver.ChromeOptions()
         self.chrome_options.add_argument(
-            "--disable-plugins --disable-instant-extended-api"
+            '--disable-plugins --disable-instant-extended-api --ignore-certificate-errors'
         )
         return self.chrome_options
 
 
-    def generic_chrome_dc(self):
-        self.desired_capabilities = webdriver.DesiredCapabilities.CHROME
-        self.desired_capabilities['loggingPrefs'] = {'browser': 'ALL'}
-        self.desired_capabilities['acceptInsecureCerts'] = True
-        return self.desired_capabilities
-
-
-    def setup_firefox_dc(self):
-        self.desired_capabilities = webdriver.DesiredCapabilities.FIREFOX
-        self.desired_capabilities['acceptInsecureCerts'] = True
-        return self.desired_capabilities
-
-
     def get_chrome_driver(self):
-        self.desired_capabilities = self.generic_chrome_dc()
         self.chrome_options = self.mandatory_chrome_options()
-        self.desired_capabilities.update(self.chrome_options.to_capabilities())
+        self.service = Service(executable_path=CHROME_PATH)
         self.browser = webdriver.Chrome(
-            executable_path='chromedriver',
-            desired_capabilities=self.desired_capabilities
+            service=self.service,
+            options=self.chrome_options,
         )
         # Desktop size
         self.set_defaults(self.browser)
@@ -66,85 +60,16 @@ class Browser():
 
 
     def get_headless_chrome(self):
-        self.desired_capabilities = self.generic_chrome_dc()
         self.chrome_options = self.mandatory_chrome_options()
-        self.chrome_options.add_argument("--headless")
+        self.chrome_options.headless = True
+        # soon https://www.selenium.dev/blog/2023/headless-is-going-away/#after
+        # self.chrome_options.add_argument("--headless=new")
+        self.service = Service(executable_path=CHROME_PATH)
         assert self.chrome_options.headless is True, \
             'Chrome did not get set to headless'
         self.browser = webdriver.Chrome(
-            executable_path='chromedriver',
+            service=self.service,
             options=self.chrome_options,
-            desired_capabilities=self.desired_capabilities
-        )
-        # Desktop size
-        self.set_defaults(self.browser)
-        return self.browser
-
-
-    def get_remote_headless_chrome(self):
-        self.desired_capabilities = self.generic_chrome_dc()
-        self.chrome_options = self.mandatory_chrome_options()
-        self.chrome_options.add_argument("--headless")
-        assert self.chrome_options.headless is True, \
-            'Chrome did not get set to headless'
-        self.browser = webdriver.Remote(
-            command_executor=SELENIUM,
-            options=self.chrome_options,
-            desired_capabilities=self.desired_capabilities
-        )
-        # Desktop size
-        self.set_defaults(self.browser)
-        return self.browser
-
-
-    def get_remote_chrome(self):
-        self.desired_capabilities = {
-          'browserName': 'chrome',
-          'chromeOptions':  {
-            'useAutomationExtension': False,
-            'forceDevToolsScreenshot': True,
-            'args': ['--disable-plugins', '--disable-instant-extended-api']
-          }
-        }
-        self.browser = webdriver.Remote(
-            command_executor=SELENIUM,
-            desired_capabilities=self.desired_capabilities
-        )
-        # Desktop size
-        self.set_defaults(self.browser)
-        return self.browser
-
-
-    def get_last_headless_chrome(self):
-        self.desired_capabilities = self.generic_chrome_dc()
-        self.chrome_options = self.mandatory_chrome_options()
-        self.desired_capabilities['browerVersion'] = '68.0.3440.106'
-        self.chrome_options.add_argument("--headless")
-        assert self.chrome_options.headless is True, \
-            'Chrome did not get set to headless'
-        self.desired_capabilities.update(self.chrome_options.to_capabilities())
-        self.browser = webdriver.Remote(
-            command_executor=SELENIUM,
-            desired_capabilities=self.desired_capabilities
-        )
-        # Desktop size
-        self.set_defaults(self.browser)
-        return self.browser
-
-
-    def get_remote_last_chrome(self):
-        self.desired_capabilities = {
-            'browserName': 'chrome',
-            'browerVersion': '68.0.3440.106',
-            'chromeOptions':  {
-                'useAutomationExtension': False,
-                'forceDevToolsScreenshot': True,
-                'args': ['--disable-plugins', '--disable-instant-extended-api']
-            }
-        }
-        self.browser = webdriver.Remote(
-            command_executor=SELENIUM,
-            desired_capabilities=self.desired_capabilities
         )
         # Desktop size
         self.set_defaults(self.browser)
@@ -152,9 +77,11 @@ class Browser():
 
 
     def get_firefox_driver(self):
-        self.desired_capabilities = self.setup_firefox_dc()
+        self.firefox_options = FirefoxOptions()
+        self.service = FirefoxService(executable_path=FIREFOX_PATH)
         self.browser = webdriver.Firefox(
-            desired_capabilities=self.desired_capabilities
+            options=self.firefox_options,
+            service=self.service
         )
         # Desktop size
         self.set_defaults(self.browser)
@@ -162,36 +89,14 @@ class Browser():
 
 
     def get_headless_firefox_driver(self):
-        self.desired_capabilities = self.setup_firefox_dc()
-        options = FirefoxOptions()
-        options.headless = True
-        # get a driver on the proxy
+        self.firefox_options = FirefoxOptions()
+        self.service = FirefoxService(executable_path=FIREFOX_PATH)
+        self.firefox_options.add_argument("--headless")
         self.browser = webdriver.Firefox(
-            desired_capabilities=self.desired_capabilities,
-            options=options
+            options=self.firefox_options,
+            service=self.service
         )
         # Desktop size
-        self.set_defaults(self.browser)
-        return self.browser
-
-
-    def get_remote_firefox_driver(self):
-        self.desired_capabilities = self.setup_firefox_dc()
-        self.browser = webdriver.Remote(
-            command_executor=SELENIUM,
-            desired_capabilities=self.desired_capabilities
-        )
-        self.set_defaults(self.browser)
-        return self.browser
-
-
-    def get_last_remote_firefox_driver(self):
-        self.desired_capabilities = self.setup_firefox_dc()
-        self.desired_capabilities['browerVersion'] = '61.0.2'
-        self.browser = webdriver.Remote(
-            command_executor=SELENIUM,
-            desired_capabilities=self.desired_capabilities
-        )
         self.set_defaults(self.browser)
         return self.browser
 
@@ -206,111 +111,62 @@ class Browser():
         return self.browser
 
 
-    def get_remote_safari_driver(self):
-        '''For user with selenium hub'''
-        self.desired_capabilities = webdriver.DesiredCapabilities.SAFARI
-        self.desired_capabilities['loggingPrefs'] = {'browser': 'ALL'}
-        self.desired_capabilities['maxInstances'] = 1
-        self.desired_capabilities['maxSession'] = 1
-        self.desired_capabilities['acceptSslCerts'] = True
-        # desired_capabilities['useTechnologyPreview'] = True
-        self.desired_capabilities['useCleanSession'] = True
-
-        self.browser = webdriver.Remote(
-            command_executor=SELENIUM,
-            desired_capabilities=self.desired_capabilities
-        )
-        return self.browser
-
-
-    def get_sauce_driver(self):
-        '''For user with selenium hub'''
-        self.desired_capabilities = {}
-        self.desired_capabilities = dict_from_string(
-            self.desired_capabilities, SL_DC)
-        self.browser = webdriver.Remote(
-            command_executor=SELENIUM,
-            desired_capabilities=self.desired_capabilities
-        )
-        return self.browser
-
-
-    def get_galaxy_s8_emulation(self):
-        '''Chrome emulation of Galaxy S8'''
-        self.device = {
-            'deviceMetrics': {'width': 1440, 'height': 2960, 'pixelRatio': 4.0},
-            'userAgent': 'mozilla/5.0 (Linux; Android 7.0; \
-            SM-G892A Build/NRD90M applewebkit/537.36 (KHTML, like Gecko) \
-            Chrome/56.0.2924.87 Mobile Safari/537.36'
-        }
-        self.chrome_options = webdriver.ChromeOptions()
-        self.chrome_options.add_argument("--start-maximized")
-        self.chrome_options.add_experimental_option(
-            "mobileEmulation", self.device)
+    def get_iphone_12_pro(self):
+        self.chrome_options = self.mandatory_chrome_options()
+        self.service = Service(executable_path=CHROME_PATH)
+        mobile_emulation = { "deviceName": "iPhone 12 Pro" }
+        self.chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
         self.browser = webdriver.Chrome(
-            executable_path='chromedriver',
-            chrome_options=self.chrome_options
+            service=self.service,
+            options=self.chrome_options,
         )
+        # Desktop size
+        self.set_defaults(self.browser)
         return self.browser
 
 
-    def get_nexus_5x_emulation(self):
-        '''Chrome emulation of Nexus 5'''
-        self.device = {
-            'deviceMetrics': {'width': 1080, 'height': 1920, 'pixelRatio': 2.6},
-            'userAgent': 'mozilla/5.0 (Linux; Android 6.0.1; \
-            Nexus 5x build/mtc19t applewebkit/537.36 (KHTML, like Gecko) \
-            Chrome/51.0.2702.81 Mobile Safari/537.36'
-        }
-        self.chrome_options = webdriver.ChromeOptions()
-        self.chrome_options.add_argument("--start-maximized")
-        self.chrome_options.add_experimental_option(
-            "mobileEmulation", self.device)
+    def get_iphone_12_pro(self):
+        self.chrome_options = self.mandatory_chrome_options()
+        self.service = Service(executable_path=CHROME_PATH)
+        mobile_emulation = { "deviceName": "iPhone 12 Pro" }
+        self.chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
         self.browser = webdriver.Chrome(
-            executable_path='chromedriver',
-            chrome_options=self.chrome_options
+            service=self.service,
+            options=self.chrome_options,
         )
+        # Desktop size
+        self.set_defaults(self.browser)
         return self.browser
 
 
-    def get_iphone_7_emulation(self):
-        '''Chrome emulation of iPhone 7'''
-        self.device = {
-            'deviceMetrics': {'width': 750, 'height': 1334, 'pixelRatio': 2.0},
-            'userAgent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 10_2_1 like Mac OS X) \
-            AppleWebKit/602.4.6 (KHTML, like Gecko) \
-            Version/10.0 Mobile/14D27 Safari/602.1'
-        }
-        self.chrome_options = webdriver.ChromeOptions()
-        self.chrome_options.add_argument("--start-maximized")
-        self.chrome_options.add_experimental_option(
-            "mobileEmulation", self.device)
-        # self.chrome_options.add_argument("--headless")
-
+    def get_galaxy_s8_plus(self):
+        self.chrome_options = self.mandatory_chrome_options()
+        self.service = Service(executable_path=CHROME_PATH)
+        mobile_emulation = { "deviceName": "Samsung Galaxy S8+" }
+        self.chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
         self.browser = webdriver.Chrome(
-            executable_path='chromedriver',
-            chrome_options=self.chrome_options
+            service=self.service,
+            options=self.chrome_options,
         )
+        # Desktop size
+        self.set_defaults(self.browser)
         return self.browser
 
 
-    def get_custom_emulation(self):
-        ''' custome device Chrome emulation'''
-        custom_device = {
-            'deviceMetrics': {'width': 360, 'height': 640, 'pixelRatio': 3.0},
-            'userAgent': 'Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 \
-            Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) \
-            Chrome/18.0.1025.166 Mobile Safari/535.19'
+    def get_custom_device(self):
+        self.chrome_options = self.mandatory_chrome_options()
+        service = Service(executable_path='./env/bin/chromedriver')
+        mobile_emulation = {
+           "deviceMetrics": { "width": 360, "height": 640, "pixelRatio": 3.0 },
+           "userAgent": "Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko)"
         }
-        self.chrome_options = webdriver.ChromeOptions()
-        self.chrome_options.add_argument("--start-maximized")
-        self.chrome_options.add_experimental_option(
-            "mobileEmulation", custom_device)
-        self.chrome_options.add_argument("--headless")
+        self.chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
         self.browser = webdriver.Chrome(
-            executable_path='chromedriver',
-            chrome_options=self.chrome_options
+            service=service,
+            options=self.chrome_options,
         )
+        # Desktop size
+        self.set_defaults(self.browser)
         return self.browser
 
 
@@ -318,22 +174,13 @@ class Browser():
         '''Returns a dict that maps short driver names to functions'''
         self.drivers = {
             'chrome': self.get_chrome_driver,
-            'custom_device': self.get_custom_emulation,
+            'custom_device': self.get_custom_device,
             'firefox': self.get_firefox_driver,
-            'last_headless_chrome': self.get_last_headless_chrome,
-            'last_remote_firefox': self.get_last_remote_firefox_driver,
+            'galaxy_s8_plus': self.get_galaxy_s8_plus,
             'headless_chrome': self.get_headless_chrome,
             'headless_firefox': self.get_headless_firefox_driver,
-            'mobile_galaxy_s8': self.get_galaxy_s8_emulation,
-            'mobile_iphone_7': self.get_iphone_7_emulation,
-            'mobile_nexus_5x': self.get_nexus_5x_emulation,
-            'remote_chrome': self.get_remote_chrome,
-            'remote_headless_chrome': self.get_remote_headless_chrome,
-            'remote_last_chrome': self.get_remote_last_chrome,
-            'remote_firefox': self.get_remote_firefox_driver,
-            'remote_safari': self.get_remote_safari_driver,
+            'iphone_12_pro': self.get_iphone_12_pro,
             'safari': self.get_safari_driver,
-            'saucelabs': self.get_sauce_driver
         }
         return self.drivers
 

@@ -1,6 +1,7 @@
 git+https://github.com/behave/behave#1.2.7.dev5
-selenium==3.14.1
+selenium==4.13.0
 python-dotenv==0.9.1
-requests==2.22.0
+requests==2.31.0
 beautifulsoup4==4.8.0
 browsermob-proxy==0.8.0
+allure-behave==2.8.10
