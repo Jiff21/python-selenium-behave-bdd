@@ -36,6 +36,9 @@ if QA_ENV == 'local':
 else:
     HOST_URL = os.getenv('HOST_URL', 'https://%s' % HOST)
 
+# Demo API from https://petstore.swagger.io/
+API_URL = 'https://petstore.swagger.io/v2'
+
 # Google IAP
 CLIENT_ID = os.getenv(
     'CLIENT_ID', '012345678901-am29widj4kW0l57Kaqmsh3ncjskepsk2.apps.googleusercontent.co')
