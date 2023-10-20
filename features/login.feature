@@ -39,3 +39,14 @@ Feature: Tests that should be run on every page
       And I click on the Login Button
     Then there should be one validation error
       And the validation error should include "Sorry, this user has been locked out"
+
+ @browser  @critical
+  Scenario: Incorrect Password
+    Given I am on "index"
+    When I click on the Username field
+      And I type in "problem_user"
+      And I click on the Password field
+      And I type in "wrong password"
+      And I click on the Login Button
+    Then there should be one validation error
+      And the validation error should include "Username and password do not match any user in this service"
